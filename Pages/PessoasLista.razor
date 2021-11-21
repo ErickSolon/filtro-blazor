@@ -1,0 +1,52 @@
+@page "/pessoas"
+
+<h3>Lista de pessoas.</h3>
+<div class="form-inline">
+    <label class="sr-only" for="nombre-filtro">Filtrar</label>
+    <input type="text" class="form-control mb-2 mr-sm-2" @bind="PessoasFiltro" placeholder="Escreva um nome" />
+    <button type="button" class="btn btn-primary mr-sm-2 mb-2" @onclick="Filtrar">Filtrar</button>
+    <button type="button" class="btn btn-danger mb-2" @onclick="Limpar">Limpar</button>
+</div>
+<table class="table table-striped" id="adminTable2">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Idade</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var pessoas in pessoas)
+        {
+                <tr>
+                        <td>@pessoas.Nome</td>
+                        <td>@pessoas.Idade</td>
+                </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    List<Pessoas> GetPessoas() => pjContext.Pessoas.ToList();
+
+    string PessoasFiltro = string.Empty;
+    List<Pessoas> pessoas;
+
+    private void Filtrar()
+    {
+        if (!String.IsNullOrEmpty(PessoasFiltro))
+        {
+            pessoas = pjContext.Pessoas.Where(x => x.Nome == PessoasFiltro).ToList();
+        }
+        PessoasFiltro = string.Empty;
+    }
+
+    private void Limpar()
+    {
+        pessoas = GetPessoas();
+    }
+
+    protected override void OnInitialized()
+    {
+        pessoas = GetPessoas();
+    }
+}
